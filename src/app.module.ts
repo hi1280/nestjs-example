@@ -4,6 +4,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PostsModule } from './posts/posts.module';
 import { Posts } from './posts/posts.entity';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
+import { FirebaseAuthStrategy } from './auth/firebase-auth.strategy';
 
 @Module({
   imports: [
@@ -17,6 +20,10 @@ import { Posts } from './posts/posts.entity';
       database: 'test',
       entities: [Posts],
       synchronize: true,
+    }),
+    AuthModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
     }),
   ],
   controllers: [AppController],

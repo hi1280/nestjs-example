@@ -6,16 +6,27 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { PostsDto } from './posts.dto';
 import { Posts } from './posts.entity';
 import { PostsService } from './posts.service';
+import { AuthGuard } from '@nestjs/passport';
 
-@Controller('posts')
+@ApiBearerAuth()
+@Controller({
+  path: 'posts',
+  version: '1',
+})
 export class PostsController {
   constructor(private readonly postService: PostsService) {}
 
+  @UseGuards(AuthGuard('bearer'))
   @Get()
   @ApiOkResponse({
     type: [Posts],
