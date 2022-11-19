@@ -1,0 +1,122 @@
+openapi: 3.0.0
+paths:
+  /:
+    get:
+      operationId: AppController_getHello
+      parameters: []
+      responses:
+        '200':
+          description: ''
+    post:
+      operationId: AppController_postHello
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppDto'
+      responses:
+        '201':
+          description: ''
+  /posts:
+    get:
+      operationId: PostsController_getData
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Posts'
+    post:
+      operationId: PostsController_postData
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostsDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Posts'
+  /posts/{id}:
+    put:
+      operationId: PostsController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostsDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Posts'
+info:
+  title: Posts example
+  description: The posts API description
+  version: '1.0'
+  contact: {}
+tags:
+  - name: posts
+    description: ''
+servers: []
+components:
+  schemas:
+    AppDto:
+      type: object
+      properties: {}
+    Posts:
+      type: object
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        description:
+          type: string
+        created_at:
+          format: date-time
+          type: string
+        update_at:
+          format: date-time
+          type: string
+        deleted_at:
+          format: date-time
+          type: string
+      required:
+        - id
+        - title
+        - description
+        - created_at
+        - update_at
+        - deleted_at
+    PostsDto:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        email:
+          type: string
+      required:
+        - title
