@@ -5,6 +5,7 @@ import { AppModule } from './app.module';
 import admin from 'firebase-admin';
 import * as serviceAccount from './firebase.json';
 import helmet from 'helmet';
+import { PrismaService } from './prisma.service';
 
 async function bootstrap() {
   let logger = null;
@@ -26,6 +27,8 @@ async function bootstrap() {
     type: VersioningType.URI,
   });
   app.useGlobalPipes(new ValidationPipe());
+  const prismaService = app.get(PrismaService);
+  await prismaService.enableShutdownHooks(app);
   const config = new DocumentBuilder()
     .setTitle('Posts example')
     .setDescription('The posts API description')
