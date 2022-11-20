@@ -1,0 +1,26 @@
+version: "3.7"
+services:
+  webapp:
+    build: ./
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_DATABASE=typeorm
+      - DB_PORT=3306
+      - DB_SYNCHRONIZE=true
+      - NODE_ENV=production
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db/sql:/docker-entrypoint-initdb.d
+      - ./db/data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: typeorm

@@ -6,20 +6,19 @@ import { PostsModule } from './posts/posts.module';
 import { Posts } from './posts/posts.entity';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { FirebaseAuthStrategy } from './auth/firebase-auth.strategy';
 
 @Module({
   imports: [
     PostsModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'test',
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
       entities: [Posts],
-      synchronize: true,
+      synchronize: process.env.DB_SYNCHRONIZE === 'true',
     }),
     AuthModule,
     ConfigModule.forRoot({
