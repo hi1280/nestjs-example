@@ -10,7 +10,7 @@ services:
       - DB_HOST=db
       - DB_USER=root
       - DB_PASSWORD=root
-      - DB_DATABASE=typeorm
+      - DB_DATABASE=knex
       - DB_PORT=3306
       - DB_SYNCHRONIZE=true
       - NODE_ENV=production
@@ -21,6 +21,7 @@ services:
     volumes:
       - ./db/sql:/docker-entrypoint-initdb.d
       - ./db/data:/var/lib/mysql
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: typeorm
+      MYSQL_DATABASE: knex

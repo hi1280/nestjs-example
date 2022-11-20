@@ -1,35 +1,36 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { Posts } from './posts.entity';
+import { Knex } from 'knex';
+import { InjectConnection } from 'nest-knexjs';
 
 @Injectable()
 export class PostsService {
-  constructor(
-    @InjectRepository(Posts)
-    private readonly postRepository: Repository<Posts>,
-  ) {}
+  constructor(@InjectConnection() private readonly knex: Knex) {}
 
-  store(title: string, description: string) {
-    const post = new Posts();
-    post.title = title;
-    post.description = description;
-    return this.postRepository.save(post);
+  store(title: string, description: string, email: string) {
+    const created_at = new Date();
+    const updated_at = new Date();
+    return this.knex<Posts>('post').insert({
+      title,
+      description,
+      email,
+      created_at,
+      updated_at,
+    });
   }
 
   get() {
-    return this.postRepository.find();
+    return this.knex<Posts>('post');
   }
 
-  async update(id: number, title: string, description: string) {
-    const post = await this.postRepository.findOneBy({ id });
-    post.title = title;
-    post.description = description;
-    return this.postRepository.save(post);
+  update(id: number, title: string, description: string, email: string) {
+    const updated_at = new Date();
+    return this.knex<Posts>('post')
+      .where({ id })
+      .update({ title, description, email, updated_at });
   }
 
-  async delete(id) {
-    const post = await this.postRepository.findOneBy({ id });
-    return this.postRepository.remove(post);
+  delete(id) {
+    return this.knex<Posts>('post').where({ id }).delete();
   }
 }
