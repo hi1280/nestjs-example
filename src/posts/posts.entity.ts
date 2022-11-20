@@ -10,27 +10,21 @@ import {
 
 @Entity('post')
 export class Posts {
-  @ApiProperty()
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
 
-  @ApiProperty()
   @Column({ nullable: false })
   title: string;
 
-  @ApiProperty()
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   description: string;
 
-  @ApiProperty()
+  @Column({ nullable: true })
+  email: string;
+
   @CreateDateColumn()
   created_at: Date;
 
-  @ApiProperty()
   @UpdateDateColumn()
-  update_at: Date;
-
-  @ApiProperty()
-  @DeleteDateColumn()
-  deleted_at: Date;
+  updated_at: Date;
 }

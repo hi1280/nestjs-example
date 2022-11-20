@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Posts } from './posts.entity';
+import { PostsResponseDto } from './posts.response.dto';
 
 @Injectable()
 export class PostsService {
@@ -10,26 +11,61 @@ export class PostsService {
     private readonly postRepository: Repository<Posts>,
   ) {}
 
-  store(title: string, description: string) {
+  async store(
+    title: string,
+    description: string,
+    email: string,
+  ): Promise<PostsResponseDto> {
     const post = new Posts();
     post.title = title;
     post.description = description;
-    return this.postRepository.save(post);
+    post.email = email;
+    const saved = await this.postRepository.save(post);
+    const response = new PostsResponseDto();
+    response.id = saved.id;
+    response.title = saved.title;
+    response.description = saved.description;
+    response.email = saved.email;
+    response.created_at = saved.created_at;
+    response.updated_at = saved.updated_at;
+    return response;
   }
 
-  get() {
-    return this.postRepository.find();
+  async get(): Promise<PostsResponseDto[]> {
+    return (await this.postRepository.find()).map((row) => {
+      const response = new PostsResponseDto();
+      response.id = row.id;
+      response.title = row.title;
+      response.description = row.description;
+      response.email = row.email;
+      response.created_at = row.created_at;
+      response.updated_at = row.updated_at;
+      return response;
+    });
   }
 
-  async update(id: number, title: string, description: string) {
+  async update(
+    id: number,
+    title: string,
+    description: string,
+  ): Promise<PostsResponseDto> {
     const post = await this.postRepository.findOneBy({ id });
     post.title = title;
     post.description = description;
-    return this.postRepository.save(post);
+    const saved = await this.postRepository.save(post);
+    const response = new PostsResponseDto();
+    response.id = saved.id;
+    response.title = saved.title;
+    response.description = saved.description;
+    response.email = saved.email;
+    response.created_at = saved.created_at;
+    response.updated_at = saved.updated_at;
+    return response;
   }
 
-  async delete(id) {
+  async delete(id: number): Promise<void> {
     const post = await this.postRepository.findOneBy({ id });
-    return this.postRepository.remove(post);
+    await this.postRepository.remove(post);
+    return;
   }
 }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -13,44 +14,53 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
 } from '@nestjs/swagger';
-import { PostsDto } from './posts.dto';
-import { Posts } from './posts.entity';
 import { PostsService } from './posts.service';
 import { AuthGuard } from '@nestjs/passport';
+import { PostsResponseDto } from './posts.response.dto';
+import {
+  CreatePostsRequestDto,
+  UpdatePostsRequestDto,
+} from './posts.request.dto';
 
 @ApiBearerAuth()
 @Controller({
   path: 'posts',
   version: '1',
 })
+// @UseGuards(AuthGuard('bearer'))
 export class PostsController {
   constructor(private readonly postService: PostsService) {}
 
-  @UseGuards(AuthGuard('bearer'))
   @Get()
   @ApiOkResponse({
-    type: [Posts],
+    type: [PostsResponseDto],
   })
-  getData(): Promise<Posts[]> {
+  getData(): Promise<PostsResponseDto[]> {
     return this.postService.get();
   }
 
   @Post()
   @ApiCreatedResponse({
-    type: Posts,
+    type: PostsResponseDto,
   })
-  postData(@Body() dto: PostsDto): Promise<Posts> {
-    return this.postService.store(dto.title, dto.description);
+  postData(@Body() dto: CreatePostsRequestDto): Promise<PostsResponseDto> {
+    return this.postService.store(dto.title, dto.description, dto.email);
   }
 
   @Put(':id')
   @ApiOkResponse({
-    type: Posts,
+    type: PostsResponseDto,
   })
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() dto: PostsDto,
-  ): Promise<Posts> {
+    @Body() dto: UpdatePostsRequestDto,
+  ): Promise<PostsResponseDto> {
     return this.postService.update(id, dto.title, dto.description);
+  }
+
+  @Delete(':id')
+  @ApiOkResponse()
+  delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.postService.delete(id);
   }
 }
