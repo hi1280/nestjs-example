@@ -14,8 +14,11 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
 } from '@nestjs/swagger';
-import { PostsDto } from './posts.dto';
-import { Posts } from './posts.entity';
+import {
+  CreatePostsRequestDto,
+  UpdatePostsRequestDto,
+} from './posts.request.dto';
+import { PostsResponseDto } from './posts.response.dto';
 import { PostsService } from './posts.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -30,36 +33,34 @@ export class PostsController {
 
   @Get()
   @ApiOkResponse({
-    type: [Posts],
+    type: [PostsResponseDto],
   })
-  getData(): Promise<Posts[]> {
+  getData(): Promise<PostsResponseDto[]> {
     return this.postService.get();
   }
 
   @Post()
   @ApiCreatedResponse({
-    type: Posts,
+    type: PostsResponseDto,
   })
-  postData(@Body() dto: PostsDto): Promise<number[]> {
+  postData(@Body() dto: CreatePostsRequestDto): Promise<PostsResponseDto> {
     return this.postService.store(dto.title, dto.description, dto.email);
   }
 
   @Put(':id')
   @ApiOkResponse({
-    type: Posts,
+    type: PostsResponseDto,
   })
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() dto: PostsDto,
-  ): Promise<number> {
-    return this.postService.update(id, dto.title, dto.description, dto.email);
+    @Body() dto: UpdatePostsRequestDto,
+  ): Promise<PostsResponseDto> {
+    return this.postService.update(id, dto.title, dto.description);
   }
 
   @Delete(':id')
-  @ApiOkResponse({
-    type: 'number',
-  })
-  delete(@Param('id', ParseIntPipe) id: number): Promise<number> {
+  @ApiOkResponse()
+  delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.postService.delete(id);
   }
 }
