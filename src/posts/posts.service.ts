@@ -1,26 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Posts } from './posts.entity';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma.service';
 import { PostsResponseDto } from './posts.response.dto';
 
 @Injectable()
 export class PostsService {
-  constructor(
-    @InjectRepository(Posts)
-    private readonly postRepository: Repository<Posts>,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async store(
     title: string,
     description: string,
     email: string,
   ): Promise<PostsResponseDto> {
-    const post = new Posts();
-    post.title = title;
-    post.description = description;
-    post.email = email;
-    const saved = await this.postRepository.save(post);
+    const data: Prisma.PostCreateInput = {
+      title,
+      description,
+      email,
+    };
+    const saved = await this.prisma.post.create({
+      data,
+    });
     const response = new PostsResponseDto();
     response.id = saved.id;
     response.title = saved.title;
@@ -32,7 +31,7 @@ export class PostsService {
   }
 
   async get(): Promise<PostsResponseDto[]> {
-    return (await this.postRepository.find()).map((row) => {
+    return (await this.prisma.post.findMany()).map((row) => {
       const response = new PostsResponseDto();
       response.id = row.id;
       response.title = row.title;
@@ -49,10 +48,14 @@ export class PostsService {
     title: string,
     description: string,
   ): Promise<PostsResponseDto> {
-    const post = await this.postRepository.findOneBy({ id });
-    post.title = title;
-    post.description = description;
-    const saved = await this.postRepository.save(post);
+    const data: Prisma.PostUpdateInput = {
+      title,
+      description,
+    };
+    const saved = await this.prisma.post.update({
+      data,
+      where: { id },
+    });
     const response = new PostsResponseDto();
     response.id = saved.id;
     response.title = saved.title;
@@ -64,8 +67,7 @@ export class PostsService {
   }
 
   async delete(id: number): Promise<void> {
-    const post = await this.postRepository.findOneBy({ id });
-    await this.postRepository.remove(post);
+    await this.prisma.post.delete({ where: { id } });
     return;
   }
 }
