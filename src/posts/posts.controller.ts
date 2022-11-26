@@ -44,7 +44,12 @@ export class PostsController {
     type: PostsResponseDto,
   })
   postData(@Body() dto: CreatePostsRequestDto): Promise<PostsResponseDto> {
-    return this.postService.store(dto.title, dto.description, dto.email);
+    return this.postService.store(
+      dto.title,
+      dto.description,
+      dto.email,
+      dto.category,
+    );
   }
 
   @Put(':id')
@@ -55,7 +60,12 @@ export class PostsController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdatePostsRequestDto,
   ): Promise<PostsResponseDto> {
-    return this.postService.update(id, dto.title, dto.description);
+    return this.postService.update(
+      id,
+      dto.title,
+      dto.description,
+      dto.category,
+    );
   }
 
   @Delete(':id')

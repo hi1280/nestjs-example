@@ -11,11 +11,13 @@ export class PostsService {
     title: string,
     description: string,
     email: string,
+    category: string[],
   ): Promise<PostsResponseDto> {
     const data: Prisma.PostCreateInput = {
       title,
       description,
       email,
+      category,
     };
     const saved = await this.prisma.post.create({
       data,
@@ -25,6 +27,7 @@ export class PostsService {
     response.title = saved.title;
     response.description = saved.description;
     response.email = saved.email;
+    response.category = saved.category as string[];
     response.created_at = saved.created_at;
     response.updated_at = saved.updated_at;
     return response;
@@ -37,6 +40,7 @@ export class PostsService {
       response.title = row.title;
       response.description = row.description;
       response.email = row.email;
+      response.category = row.category as string[];
       response.created_at = row.created_at;
       response.updated_at = row.updated_at;
       return response;
@@ -47,10 +51,12 @@ export class PostsService {
     id: number,
     title: string,
     description: string,
+    category: string[],
   ): Promise<PostsResponseDto> {
     const data: Prisma.PostUpdateInput = {
       title,
       description,
+      category,
     };
     const saved = await this.prisma.post.update({
       data,
@@ -61,6 +67,7 @@ export class PostsService {
     response.title = saved.title;
     response.description = saved.description;
     response.email = saved.email;
+    response.category = saved.category as string[];
     response.created_at = saved.created_at;
     response.updated_at = saved.updated_at;
     return response;

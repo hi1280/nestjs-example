@@ -31,6 +31,7 @@ model Post {
   title       String    @db.VarChar(255)
   description String?   @db.VarChar(255)
   email       String    @db.VarChar(255)
+  category    Json?
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
 }

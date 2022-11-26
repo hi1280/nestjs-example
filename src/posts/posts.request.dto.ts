@@ -1,5 +1,17 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+
+enum Category {
+  Red = 'red',
+  Green = 'green',
+  Blue = 'blue',
+}
 
 export class CreatePostsRequestDto {
   @ApiProperty({
@@ -22,9 +34,19 @@ export class CreatePostsRequestDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(Category, {
+    each: true,
+  })
+  category: string[];
 }
 
 export class UpdatePostsRequestDto extends PickType(CreatePostsRequestDto, [
   'title',
   'description',
+  'category',
 ]) {}

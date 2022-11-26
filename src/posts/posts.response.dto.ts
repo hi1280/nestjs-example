@@ -14,6 +14,9 @@ export class PostsResponseDto {
   email: string;
 
   @ApiProperty()
+  category: string[];
+
+  @ApiProperty()
   created_at: Date;
 
   @ApiProperty()
