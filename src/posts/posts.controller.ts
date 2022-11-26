@@ -21,6 +21,8 @@ import {
   CreatePostsRequestDto,
   UpdatePostsRequestDto,
 } from './posts.request.dto';
+import { Roles } from 'src/auth/roles.decorator';
+import { Role } from 'src/auth/role.enum';
 
 @ApiBearerAuth()
 @Controller({
@@ -32,6 +34,7 @@ export class PostsController {
   constructor(private readonly postService: PostsService) {}
 
   @Get()
+  @Roles(Role.Admin)
   @ApiOkResponse({
     type: [PostsResponseDto],
   })
