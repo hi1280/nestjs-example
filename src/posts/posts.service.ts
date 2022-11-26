@@ -15,17 +15,20 @@ export class PostsService {
     title: string,
     description: string,
     email: string,
+    category: string[],
   ): Promise<PostsResponseDto> {
     const post = new Posts();
     post.title = title;
     post.description = description;
     post.email = email;
+    post.category = category;
     const saved = await this.postRepository.save(post);
     const response = new PostsResponseDto();
     response.id = saved.id;
     response.title = saved.title;
     response.description = saved.description;
     response.email = saved.email;
+    response.category = saved.category;
     response.created_at = saved.created_at;
     response.updated_at = saved.updated_at;
     return response;
@@ -38,6 +41,7 @@ export class PostsService {
       response.title = row.title;
       response.description = row.description;
       response.email = row.email;
+      response.category = row.category;
       response.created_at = row.created_at;
       response.updated_at = row.updated_at;
       return response;
@@ -48,16 +52,19 @@ export class PostsService {
     id: number,
     title: string,
     description: string,
+    category: string[],
   ): Promise<PostsResponseDto> {
     const post = await this.postRepository.findOneBy({ id });
     post.title = title;
     post.description = description;
+    post.category = category;
     const saved = await this.postRepository.save(post);
     const response = new PostsResponseDto();
     response.id = saved.id;
     response.title = saved.title;
     response.description = saved.description;
     response.email = saved.email;
+    response.category = saved.category;
     response.created_at = saved.created_at;
     response.updated_at = saved.updated_at;
     return response;

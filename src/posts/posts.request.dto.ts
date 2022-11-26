@@ -22,9 +22,16 @@ export class CreatePostsRequestDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  category: string[];
 }
 
 export class UpdatePostsRequestDto extends PickType(CreatePostsRequestDto, [
   'title',
   'description',
+  'category',
 ]) {}

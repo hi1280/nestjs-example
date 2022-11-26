@@ -22,6 +22,12 @@ export class Posts {
   @Column({ nullable: true })
   email: string;
 
+  @Column({
+    nullable: true,
+    type: 'json',
+  })
+  category: string[];
+
   @CreateDateColumn()
   created_at: Date;
 
