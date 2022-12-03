@@ -1,15 +1,5 @@
 version: "3.7"
 services:
-  webapp:
-    build: ./
-    ports:
-      - 3000:3000
-    depends_on:
-      - db
-      - db-migrate
-    environment:
-      NODE_ENV: development
-      DATABASE_URL: mysql://root:root@db:3306/prisma
   db-migrate:
     build:
       context: ./
