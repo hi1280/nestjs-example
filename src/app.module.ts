@@ -6,6 +6,9 @@ import { PostsModule } from './posts/posts.module';
 import { Posts } from './posts/posts.entity';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
+import { SentryInterceptor, SentryModule } from '@ntegral/nestjs-sentry';
 
 @Module({
   imports: [
@@ -26,8 +29,20 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    SentryModule.forRoot({
+      dsn: process.env.SENTRY_DSN,
+      debug: false,
+      logLevels: ['error'],
+    }),
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useFactory: () => new SentryInterceptor(),
+    },
+  ],
 })
 export class AppModule {}
